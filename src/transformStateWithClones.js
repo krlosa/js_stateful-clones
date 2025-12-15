@@ -19,29 +19,34 @@ function transformStateWithClones(state, actions) {
       continue;
     }
 
-    if (action.type === 'addProperties') {
-      if (
-        action.extraData &&
-        Object.prototype.toString.call(action.extraData) === '[object Object]'
-      ) {
-        currentState = { ...currentState, ...action.extraData };
-      }
-      history.push(currentState);
-    } else if (action.type === 'removeProperties') {
-      if (!Array.isArray(action.keysToRemove)) {
-        continue;
-      }
+    switch (action.type) {
+      case 'addProperties':
+        if (
+          action.extraData &&
+          typeof action.extraData === 'object' &&
+          !Array.isArray(action.extraData)
+        ) {
+          currentState = { ...currentState, ...action.extraData };
+        }
+        break;
+      case 'removeProperties':
+        if (!Array.isArray(action.keysToRemove)) {
+          continue;
+        }
 
-      currentState = { ...currentState };
+        currentState = { ...currentState };
 
-      for (const key of action.keysToRemove) {
-        delete currentState[key];
-      }
-      history.push(currentState);
-    } else if (action.type === 'clear') {
-      currentState = {};
-      history.push(currentState);
+        for (const key of action.keysToRemove) {
+          delete currentState[key];
+        }
+        break;
+      case 'clear':
+        currentState = {};
+        break;
+      default:
+        break;
     }
+    history.push({ ...currentState });
   }
 
   return history;
