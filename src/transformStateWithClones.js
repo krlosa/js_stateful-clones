@@ -31,7 +31,7 @@ function transformStateWithClones(state, actions) {
         break;
       case 'removeProperties':
         if (!Array.isArray(action.keysToRemove)) {
-          continue;
+          break;
         }
 
         currentState = { ...currentState };
